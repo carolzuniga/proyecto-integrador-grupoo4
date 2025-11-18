@@ -1,0 +1,53 @@
+<?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+include("db.php");
+?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Clientes</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <h2>Lista de Clientes</h2>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+        </tr>
+        <?php
+        $sql = "SELECT * FROM clientes ORDER BY IDclientes DESC";
+        if ($result = $conn->query($sql)) {
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    echo "<tr>
+                            <td>".htmlspecialchars($row['IDclientes'])."</td>
+                            <td>".htmlspecialchars($row['nombre'])."</td>
+                            <td>".htmlspecialchars($row['apellido'])."</td>
+                          </tr>";
+                }
+            } else {
+                echo "<tr><td colspan='3'>No hay clientes registrados.</td></tr>";
+            }
+            $result->free();
+        } else {
+            echo "<tr><td colspan='3'>Error: ".$conn->error."</td></tr>";
+        }
+        ?>
+    </table>
+
+    <h3>Agregar Cliente</h3>
+<form action="add_cliente.php" method="POST" class="form">
+    <input type="text" name="nombre" placeholder="Nombre" required>
+    <input type="text" name="apellido" placeholder="Apellido" required>
+    <button type="submit">Guardar</button>
+</form>
+</div>
+</body>
+</html>
+

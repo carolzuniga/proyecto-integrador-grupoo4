@@ -1,0 +1,26 @@
+name: Despliegue IIS Producción
+
+on:
+  push:
+    branches:
+      - feature/web-windows
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout código
+      uses: actions/checkout@v3
+
+    - name: Copiar archivos a IIS producción
+      uses: appleboy/ssh-action@v0.1.6
+      with:
+        host: ${{ secrets.SERVER_IP }}
+        username: ${{ secrets.SERVER_USER }}
+        password: ${{ secrets.SERVER_PASS }}
+        port: 5985
+        script: |
+          Remove-Item -Path 'C:\inetpub\wwwroot\*' -Recurse -Force
+          Copy-Item -Path '${{ github.workspace }}\windows\web\*' -Destination 'C:\inetpub\wwwroot\' -Recurse
+          iisreset

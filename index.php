@@ -8,12 +8,12 @@ include("db.php");
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Clientes Prueba</title>
+    <title>Gestión de Clientes Prueba Grupo 4</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="container">
-    <h2>Lista de Clientes</h2>
+    <h2>Lista de Clientes ::</h2>
     <table>
         <tr>
             <th>ID</th>

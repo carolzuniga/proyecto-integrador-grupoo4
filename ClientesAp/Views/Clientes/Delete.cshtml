@@ -1,0 +1,20 @@
+﻿@model ClientesAp.Models.Cliente
+@{
+    ViewData["Title"] = "Eliminar Cliente";
+}
+
+<h1>Eliminar Cliente</h1>
+
+<h4>¿Seguro que deseas eliminar este cliente?</h4>
+
+<div>
+    <h5>@Model.Nombre @Model.Apellido</h5>
+    <p>Email: @Model.Email</p>
+    <p>Teléfono: @Model.Telefono</p>
+</div>
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

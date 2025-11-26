@@ -7,22 +7,22 @@ pipeline {
     }
 
     environment {
-        // Repositorio y rama donde está el código PHP
+        // Repositorio y rama
         GIT_REPO   = "https://github.com/carolzuniga/proyecto-integrador-grupoo4.git"
         GIT_BRANCH = "feature/web-ubuntu"
 
         // Desarrollo (Proxmox)
         DEV_HOST = "10.50.30.250"
-        DEV_USER = "grupo4"              // <-- cámbialo si usas otro usuario en la VM de DEV
-        DEV_SSH  = "ssh-dev-ubuntu"      // ID de credencial SSH en Jenkins
-        DEV_PATH = "/var/www/html/web-ubuntu"   // ruta donde estará tu sistema en DEV
+        DEV_USER = "grupo4"
+        DEV_SSH  = "ssh-dev-ubuntu"   // <-- ID de la credencial SSH en jenkins
+        DEV_PATH = "/opt/lampp/htdocs/web-ubuntu"
 
-        // Producción (VMware)
+        // Producción (VMware) - usando agente Jenkins en la VM
         PROD_PATH   = "/var/www/html/web-ubuntu"
         PROD_DB_HOST = "172.16.10.19"
-        PROD_DB_USER = "root"            // <-- cambia si usas otro
-        PROD_DB_PASS = "1234"            // <-- cambia si usas otra contraseña
-        PROD_DB_NAME = "clientes"        // <-- cambia si tu BD tiene otro nombre
+        PROD_DB_USER = "root"
+        PROD_DB_PASS = "1234"
+        PROD_DB_NAME = "clientes"
     }
 
     stages {
@@ -46,7 +46,7 @@ pipeline {
                         rsync -avz --delete . ${DEV_USER}@${DEV_HOST}:${DEV_PATH}/
 
                         echo "--- Reiniciando Apache en DEV ---"
-                        ssh ${DEV_USER}@${DEV_HOST} "sudo systemctl restart apache2"
+                        ssh ${DEV_USER}@${DEV_HOST} "sudo /opt/lampp/lampp restartapache"
                     """
                 }
             }
@@ -75,13 +75,9 @@ pipeline {
 
                     echo "--- Reiniciando Apache en Producción ---"
                     sudo systemctl restart apache2 || sudo systemctl restart apache2.service || true
-
-                    echo "--- Si tienes un SQL a ejecutar lo ponemos aquí (opcional) ---"
-                    # Ejemplo:
-                    # mysql -h ${PROD_DB_HOST} -u ${PROD_DB_USER} -p${PROD_DB_PASS} ${PROD_DB_NAME} < ${PROD_PATH}/clientes.sql
-
                 """
             }
         }
     }
 }
+

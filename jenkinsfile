@@ -24,12 +24,9 @@ pipeline {
                     // Cambiar a la rama main
                     sh 'git checkout main'
                     
-                    // Hacer el merge de develop en main
-                    sh 'git merge origin/develop'
+                    // Hacer el merge de develop en main con la opción --allow-unrelated-histories
+                    sh 'git merge origin/develop --allow-unrelated-histories'
                     
-                    // Resolver conflictos (si es necesario)
-                    // sh 'git mergetool' // Descomenta si necesitas intervención manual para resolver conflictos
-
                     // Confirmar el merge (si no hay conflictos)
                     sh 'git commit -m "Merge develop into main" || echo "No changes to commit"'
                     

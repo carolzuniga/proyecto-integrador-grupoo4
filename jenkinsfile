@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         // Definir las credenciales de GitHub que configuraste en Jenkins
-        GIT_CREDENTIALS = 'github-token'  // Reemplaza con el ID de tus credenciales en Jenkins
+        GIT_CREDENTIALS = 'ggithub-token'  // Reemplaza con el ID de tus credenciales en Jenkins
     }
 
     stages {
@@ -24,9 +24,12 @@ pipeline {
                     // Cambiar a la rama main
                     sh 'git checkout main'
                     
-                    // Hacer el merge de develop en main con la opción --allow-unrelated-histories
-                    sh 'git merge origin/develop --allow-unrelated-histories'
+                    // Hacer el merge de develop en main
+                    sh 'git merge origin/develop'
                     
+                    // Resolver conflictos (si es necesario)
+                    // sh 'git mergetool' // Descomenta si necesitas intervención manual para resolver conflictos
+
                     // Confirmar el merge (si no hay conflictos)
                     sh 'git commit -m "Merge develop into main" || echo "No changes to commit"'
                     
@@ -46,5 +49,6 @@ pipeline {
         }
     }
 }
+
 
 

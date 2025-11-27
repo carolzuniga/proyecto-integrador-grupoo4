@@ -1,48 +1,53 @@
 pipeline {
-    agent any
+    agent any  // Ejecutar en cualquier agente de Jenkins disponible
+
+    environment {
+        // Definir las credenciales de GitHub que configuraste en Jenkins
+        GIT_CREDENTIALS = 'github-token'  // Reemplaza con el ID de tus credenciales en Jenkins
+    }
 
     stages {
         stage('Checkout') {
             steps {
-                // Jenkins baja el repo desde GitHub (rama feature/web-ubuntu)
-                git branch: 'feature/web-ubuntu',
-                    url: 'https://github.com/carolzuniga/proyecto-integrador-grupoo4.git',
-                    credentialsId: 'github-token'
+                // Clonar el repositorio de GitHub
+                checkout([$class: 'GitSCM', 
+                          branches: [[name: '*/develop']],  // Especifica la rama de donde se parte
+                          doGenerateSubmoduleConfigurations: false, 
+                          extensions: [], 
+                          userRemoteConfigs: [[url: 'https://github.com/carolzuniga/proyecto-integrador-grupoo4.git', credentialsId: "${GIT_CREDENTIALS}"]]])  // Usa tus credenciales configuradas
             }
         }
 
-        stage('Build') {
+        stage('Merge Develop into Main') {
             steps {
-                echo 'Simulando build PHP...'
-            }
-        }
+                script {
+                    // Cambiar a la rama main
+                    sh 'git checkout main'
+                    
+                    // Hacer el merge de develop en main
+                    sh 'git merge origin/develop'
+                    
+                    // Resolver conflictos (si es necesario)
+                    // sh 'git mergetool' // Descomenta si necesitas intervención manual para resolver conflictos
 
-        stage('Tests') {
-            steps {
-                echo 'Simulando tests...'
-            }
-        }
-
-        stage('Deploy Ubuntu Web') {
-            steps {
-                echo 'Desplegando en servidor Ubuntu Web (10.50.30.250)...'
-
-                // Jenkins usa su clave SSH (ya configurada) para entrar al servidor
-                sh '''
-                ssh -o StrictHostKeyChecking=no grupo4@10.50.30.250 \
-                  "cd /opt/lampp/htdocs/clientes && git pull origin feature/web-ubuntu"
-                '''
+                    // Confirmar el merge (si no hay conflictos)
+                    sh 'git commit -m "Merge develop into main" || echo "No changes to commit"'
+                    
+                    // Pushear los cambios al repositorio remoto
+                    sh 'git push origin main'
+                }
             }
         }
     }
 
     post {
         success {
-            echo '✅ Deploy completado correctamente en Ubuntu Web'
+            echo 'Merge completado con éxito!'
         }
         failure {
-            echo '❌ Ocurrió un error en el deploy'
+            echo 'Hubo un error en el merge'
         }
     }
 }
+
 

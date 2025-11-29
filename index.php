@@ -13,7 +13,7 @@ include("db.php");
 </head>
 <body>
 <div class="container">
-    <h2>Lista de Clientes AAAAAAAAA </h2>
+    <h2>Lista de Clientes CHUMICOOO </h2>
     <table>
         <tr>
             <th>ID</th>

@@ -45,7 +45,7 @@ include("db.php");
     <form action="add_cliente.php" method="POST" class="form">
         <input type="text" name="nombre" placeholder="Nombre" required>
         <input type="text" name="apellido" placeholder="Apellido" required>
-        <button type="submit">Guardar</button>
+        <button type="submit">Guardar no</button>
     </form>
 </div>
 </body>
